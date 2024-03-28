@@ -1,7 +1,12 @@
-import React from "react";
-
 const Search = () => {
-  return <div>Search</div>;
+  return (
+    <>
+      <form>
+        <input placeholder="Search" className="rounded-md" />
+        <button></button>
+      </form>
+    </>
+  );
 };
 
 export default Search;
