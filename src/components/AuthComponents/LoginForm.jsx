@@ -1,17 +1,29 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { signInUser } from "../../redux/ActionCreators/authActionCreator.js";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      alert("Please fill in all fields");
+      return;
+    }
+    signInUser(email, password);
+  };
 
   return (
     <form
       autoComplete="off"
       className="flex flex-col items-center gap-2  bg-gray-700 p-10 rounded-lg shadow-lg"
+      onSubmit={handleSubmit}
     >
       <div className="flex flex-col items-center gap-3">
         <input
+          // required/
           type="text"
           name="email"
           placeholder="Email"
@@ -20,7 +32,8 @@ const LoginForm = () => {
           className="border-2 border-emerald-600 rounded-md focus:outline-none p-1"
         />
         <input
-          type="text"
+          // required
+          type="password"
           name="password"
           placeholder="Password"
           value={password}
