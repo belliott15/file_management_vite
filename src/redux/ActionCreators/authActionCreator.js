@@ -29,7 +29,39 @@ export const signInUser = (email, password) => {
 };
 
 export const signUpUser = (fName, lName, email, password) => {
-  console.log("name, email, password", fName, lName, email, password);
+  fire
+    .auth()
+    .createUserWithEmailAndPassword(email, password)
+    .then((user) => {
+      fire
+        .auth()
+        .currentUser.updateProfile({
+          displayName: fName,
+        })
+        .then(() => {
+          const currentUser = fire.auth().currentUser;
+          loginUser({
+            uid: currentUser.uid,
+            name: currentUser.displayName,
+            email: currentUser.email,
+          });
+          console.log("passed", currentUser);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    })
+    .catch((error) => {
+      if (error.code === "auth/email-already-in-use") {
+        alert("Email already in use. Please sign in.");
+      }
+      if (error.code === "auth/invalid-email") {
+        alert("Invalid Email.");
+      }
+      if (error.code === "auth/weak-password") {
+        alert("Weak Password. Please create a new password");
+      }
+    });
 };
 
 export const signOutUser = () => {
