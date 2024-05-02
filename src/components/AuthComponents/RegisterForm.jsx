@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { signUpUser } from "../../redux/ActionCreators/authActionCreator.js";
 
 const RegisterForm = () => {
@@ -8,6 +8,9 @@ const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,8 +28,14 @@ const RegisterForm = () => {
       return;
     }
 
-    signUpUser(firstName, lastName, email, password);
+    signUpUser(firstName, lastName, email, password, setSuccess);
   };
+
+  useEffect(() => {
+    if (success) {
+      navigate("/dashboard");
+    }
+  }, [success]);
 
   return (
     <form

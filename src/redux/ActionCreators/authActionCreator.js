@@ -3,24 +3,30 @@ import fire from "../../config/firebase.js";
 
 const loginUser = (payload) => {
   return {
-    type: types.LOGIN_USER,
+    type: types.SIGN_IN,
     payload,
   };
 };
 
 const logoutUser = () => {
   return {
-    type: types.SIGN_OUT_USER,
+    type: types.SIGN_OUT,
   };
 };
 
 //action creator
-export const signInUser = (email, password) => {
+export const signInUser = (email, password, setSuccess) => {
   fire
     .auth()
     .signInWithEmailAndPassword(email, password)
     .then((user) => {
-      console.log(user);
+      loginUser({
+        uid: user.user.uid,
+        email: user.user.email,
+        displayName: user.user.displayName,
+      });
+      setSuccess(true);
+      // console.log(user, "authAction Creator signin");
     })
     .catch((error) => {
       console.log(error);
@@ -28,7 +34,7 @@ export const signInUser = (email, password) => {
     });
 };
 
-export const signUpUser = (fName, lName, email, password) => {
+export const signUpUser = (fName, lName, email, password, setSuccess) => {
   fire
     .auth()
     .createUserWithEmailAndPassword(email, password)
@@ -38,14 +44,15 @@ export const signUpUser = (fName, lName, email, password) => {
         .currentUser.updateProfile({
           displayName: fName,
         })
-        .then(() => {
-          const currentUser = fire.auth().currentUser;
+        .then(async () => {
+          const currentUser = await fire.auth().currentUser;
           loginUser({
             uid: currentUser.uid,
             name: currentUser.displayName,
             email: currentUser.email,
           });
-          console.log("passed", currentUser);
+          setSuccess(true);
+          console.log("user object in signupUser", user);
         })
         .catch((error) => {
           console.log(error);
@@ -66,4 +73,16 @@ export const signUpUser = (fName, lName, email, password) => {
 
 export const signOutUser = () => {
   logoutUser();
+};
+
+export const checkIsLoggedIn = () => {
+  fire.auth().onAuthStateChanged((user) => {
+    if (user) {
+      loginUser({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+      });
+    }
+  });
 };

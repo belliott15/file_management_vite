@@ -1,10 +1,13 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { signInUser } from "../../redux/ActionCreators/authActionCreator.js";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,8 +15,14 @@ const LoginForm = () => {
       alert("Please fill in all fields");
       return;
     }
-    signInUser(email, password);
+    signInUser(email, password, setSuccess);
   };
+
+  useEffect(() => {
+    if (success) {
+      navigate("/dashboard");
+    }
+  }, [success]);
 
   return (
     <form
