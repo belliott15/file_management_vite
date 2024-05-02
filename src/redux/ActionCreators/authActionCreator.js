@@ -52,7 +52,7 @@ export const signUpUser = (fName, lName, email, password, setSuccess) => {
             email: currentUser.email,
           });
           setSuccess(true);
-          // console.log("passed", currentUser);
+          console.log("user object in signupUser", user);
         })
         .catch((error) => {
           console.log(error);
@@ -73,4 +73,16 @@ export const signUpUser = (fName, lName, email, password, setSuccess) => {
 
 export const signOutUser = () => {
   logoutUser();
+};
+
+export const checkIsLoggedIn = () => {
+  fire.auth().onAuthStateChanged((user) => {
+    if (user) {
+      loginUser({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+      });
+    }
+  });
 };
